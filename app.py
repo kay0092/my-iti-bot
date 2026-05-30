@@ -7,7 +7,7 @@ st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# Gemini API Setup
+# Gemini API Setup (Locker se key uthayega)
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 else:
