@@ -6,11 +6,13 @@ st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# Strict Locker Config
+# Safe Loader
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+elif st.secrets.get("secrets", {}).get("GEMINI_API_KEY"):
+    genai.configure(api_key=st.secrets["secrets"]["GEMINI_API_KEY"])
 else:
-    st.error("API Key missing in Secrets!")
+    st.error("API Key missing! Kripya Streamlit Secrets check karein.")
 
 SYSTEM_PROMPT = """
 Aap ek strictly professional Institute Admission Assistant hain. Aapko sirf aur sirf niche diye gaye DATA ke basis par jawab dena hai. 
