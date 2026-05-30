@@ -1,19 +1,17 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Page Config
 st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢", layout="centered")
 
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# Gemini API Setup (Locker se key uthayega)
+# Yeh line direct aapke usi Secrets locker se key uthayegi
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 else:
     st.error("API Key missing! Please set GEMINI_API_KEY in Streamlit secrets.")
 
-# Aapka Strict System Prompt aur PDF ka Data
 SYSTEM_PROMPT = """
 Aap ek strictly professional Institute Admission Assistant hain. Aapko sirf aur sirf niche diye gaye DATA ke basis par jawab dena hai. 
 Agar koi data ismein nahi hai, toh saaf bol dijiye: "Main maafi chahta/chahti hoon, iski jankari PDF mein nahi hai." 
@@ -51,7 +49,6 @@ RULES FOR VISUALLY IMPAIRED:
 [DATA END]
 """
 
-# Chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -59,7 +56,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if user_input := st.chat_input("Apna sawal yahan likhein (e.g., Bhopal me COPA ki kitni seats hain?)..."):
+if user_input := st.chat_input("Apna sawal yahan likhein..."):
     with st.chat_message("user"):
         st.markdown(user_input)
     st.session_state.messages.append({"role": "user", "content": user_input})
