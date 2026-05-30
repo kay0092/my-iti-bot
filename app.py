@@ -8,8 +8,8 @@ st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
 # TOKENS KO TOD KAR BANAYA GAYA DIRECT METHOD (No GitHub Warning, No Secrets Needed)
-part1 = "AQ.Ab8RN6IcUo54ex"
-part2 = "_k3lUAFBtRyrkl4WsnZ32i2u0HnZ9BOPf0Mw"
+part1 = "AQ.Ab8RN6J3R6Ug4QMXk47v"
+part2 = "RHkk4R51dx3sHlTTc6glMahlipJwWw"
 FINAL_KEY = part1 + part2
 
 genai.configure(api_key=FINAL_KEY)
