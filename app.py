@@ -7,12 +7,11 @@ st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# TOKENS KO TOD KAR BANAYA GAYA DIRECT METHOD (No GitHub Warning, No Secrets Needed)
-part1 = "AQ.Ab8RN6J3R6Ug4QMXk47v"
-part2 = "RHkk4R51dx3sHlTTc6glMahlipJwWw"
-FINAL_KEY = part1 + part2
-
-genai.configure(api_key=FINAL_KEY)
+# Strict Locker Setup
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+else:
+    st.error("API Key missing! Kripya Streamlit Secrets check karein.")
 
 # Aapka Strict System Prompt aur PDF ka Data
 SYSTEM_PROMPT = """
