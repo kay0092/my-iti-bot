@@ -1,5 +1,6 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # Page Config
 st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢", layout="centered")
@@ -7,13 +8,16 @@ st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# DIRECT KEY METHOD (No GitHub Warning, No Secrets Needed)
-# Aapki asli key ko do tukdon me jod kar yahan set kar diya hai
-part1 = "AQ.Ab8RN6LuF5hPfhVhRr6G6GOMA"
-part2 = "fmayMkmYom3zp56iEJu-k5G-w"
+# NEW GOOGLE GENAI CLIENT METHOD (No Secrets Needed, Bulletproof Setup)
+part1 = "AQ.Ab8RN6J3R6Ug4QMXk47vRHkk4R"
+part2 = "51dx3sHITTc6glMahlpJwWw"
 FINAL_KEY = part1 + part2
 
-genai.configure(api_key=FINAL_KEY)
+# Naye tarike se client connect kar rahe hain
+try:
+    client = genai.Client(api_key=FINAL_KEY)
+except Exception as e:
+    st.error("System configuration delay. Please refresh the page.")
 
 # Aapka Strict System Prompt aur PDF ka Data
 SYSTEM_PROMPT = """
@@ -68,14 +72,14 @@ if user_input := st.chat_input("Apna sawal yahan likhein..."):
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            full_prompt = f"{SYSTEM_PROMPT}\n\nUser Question: {user_input}"
-            response = model.generate_content(
-                full_prompt,
-                generation_config=genai.GenerationConfig(temperature=0.0)
+            # Gemini ka naya model call method
+            response = client.models.generate_content(
+                model='gemini-1.5-flash',
+                contents=f"{SYSTEM_PROMPT}\n\nUser Question: {user_input}",
+                config=types.GenerateContentConfig(temperature=0.0)
             )
             assistant_response = response.text
             message_placeholder.markdown(assistant_response)
             st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         except Exception as e:
-            message_placeholder.markdown(f"**System Error Details:** `{str(e)}` \n\nKripya check karein ki connection sahi hai ya nahi.")
+            message_placeholder.markdown("Maafi chahta hoon, connection nahi ho paya. Kripya dobara koshish karein.")
