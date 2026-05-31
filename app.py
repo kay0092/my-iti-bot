@@ -8,7 +8,9 @@ st.set_page_config(page_title="Institute Information Assistant", page_icon="🏢
 st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
-# Professional Secrets Connection (Naya Google GenAI Client)
+# Safe Client Initialization (As per new google-genai SDK)
+client = None
+
 if "GEMINI_API_KEY" in st.secrets:
     try:
         client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
@@ -17,7 +19,7 @@ if "GEMINI_API_KEY" in st.secrets:
 else:
     st.error("API Key missing! Kripya Streamlit Secrets check karein.")
 
-# Aapka Strict System Prompt aur PDF ka Data
+# Strict System Prompt aur PDF ka Data
 SYSTEM_PROMPT = """
 Aap ek strictly professional Institute Admission Assistant hain. Aapko sirf aur sirf niche diye gaye DATA ke basis par jawab dena hai. 
 Agar koi data ismein nahi hai, toh saaf bol dijiye: "Main maafi chahta/chahti hoon, iski jankari PDF mein nahi hai." 
@@ -55,6 +57,7 @@ RULES FOR VISUALLY IMPAIRED:
 [DATA END]
 """
 
+# Chat history framework
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -62,22 +65,32 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# Chat Input Block with Safety Checks
 if user_input := st.chat_input("Apna sawal yahan likhein..."):
     with st.chat_message("user"):
         st.markdown(user_input)
     st.session_state.messages.append({"role": "user", "content": user_input})
 
+    # Stop execution if client is not ready
+    if client is None:
+        st.warning("API client ready nahi hai. Pehle GEMINI_API_KEY configure karein.")
+        st.stop()
+
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         try:
-            # Gemini Naya Code Response Block
+            # Using new SDK format and gemini-2.0-flash
             response = client.models.generate_content(
-                model='gemini-1.5-flash',
+                model="gemini-2.0-flash",
                 contents=f"{SYSTEM_PROMPT}\n\nUser Question: {user_input}",
-                config=types.GenerateContentConfig(temperature=0.0)
+                config=types.GenerateContentConfig(temperature=0.0),
             )
-            assistant_response = response.text
+            assistant_response = response.text or "Koi response nahi mila."
             message_placeholder.markdown(assistant_response)
             st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+            
         except Exception as e:
-            message_placeholder.markdown(f"**Connection Diagnostic Error:** `{str(e)}` \n\nKripya check karein ki Streamlit Secrets properly saved hain ya nahi.")
+            message_placeholder.markdown(
+                f"**Connection Diagnostic Error:** `{str(e)}`\n\n"
+                "Kripya check karein ki Streamlit Secrets properly saved hain ya nahi."
+            )
