@@ -9,8 +9,8 @@ st.title("🏢 Institute Admission Information Desk")
 st.write("Aap is chat-box mein kisi bhi Institute, seats, hostel ya location ke baare mein Hindi/English mein puch sakte hain.")
 
 # NEW GOOGLE GENAI CLIENT METHOD (No Secrets Needed, Bulletproof Setup)
-part1 = "AQ.Ab8RN6J3R6Ug4QMXk47vRHkk4R"
-part2 = "51dx3sHITTc6glMahlpJwWw"
+part1 = "AQ.Ab8RN6LuF5hPfhVhRr6G6GOMA"
+part2 = "fmayMkmYom3zp56iEJu-k5G-w"
 FINAL_KEY = part1 + part2
 
 # Naye tarike se client connect kar rahe hain
